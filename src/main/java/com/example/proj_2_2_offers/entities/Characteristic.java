@@ -19,15 +19,10 @@ public class Characteristic {
     private Long id;
     @Column(name = "title")
     private String title;
-    @Column(name = "quantity")
-    private Integer quantity;
-    @Column(name = "durable")
-    private Boolean isDurable;
     @Column(name = "price")
     private Double price;
-    @ManyToOne
-    @JoinColumn(name = "offer_id")
-    private Offer offer;
+    @Column(name = "main_quan")
+    private Integer quantity;
 
     @Override
     public boolean equals(Object o) {

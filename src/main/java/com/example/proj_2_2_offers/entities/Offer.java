@@ -23,7 +23,7 @@ public class Offer {
     @Column(name = "price")
     private Double price;
     @OneToMany(mappedBy = "offer", cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
-    private Collection<Characteristic> characteristics=new HashSet<>();
+    private Collection<CharacteristicNode> characteristics=new HashSet<>();
     @ManyToOne
     @JoinColumn(name = "cat_id")
     private Category category;

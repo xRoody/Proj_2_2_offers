@@ -17,6 +17,7 @@ import javax.annotation.security.RolesAllowed;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 
 
 @Slf4j
@@ -39,7 +40,7 @@ public class CharacteristicController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> addNewChar(@RequestBody CharacteristicDTO characteristicDTO){
+    public ResponseEntity<Object> addNewCharNode(@RequestBody CharacteristicDTO characteristicDTO){
         List<BodyExceptionWrapper> reports=validator.validate(characteristicDTO);
         if (reports.size()!=0) {
             log.info(reports.toString());
@@ -66,4 +67,16 @@ public class CharacteristicController {
         log.info("No category with id={} deleted", id);
         return ResponseEntity.noContent().build();
     }
+
+    @PatchMapping
+    public ResponseEntity<Object> addToStorage(@RequestBody Map<String, Integer> map){
+        System.out.println(map);
+        try{
+            characteristicService.getFromStorage(map);
+            return ResponseEntity.ok().build();
+        }catch (Exception e){
+            return new ResponseEntity<>(new BodyExceptionWrapper("400", "Wrong quantity"),HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }

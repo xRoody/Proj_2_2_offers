@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
 public class CharValidator {
     private final OfferService offerService;
     private final CharacteristicService characteristicService;
-    private final static Pattern titlePattern=Pattern.compile("[A-Z][A-Za-z]*");
+    private final static Pattern titlePattern=Pattern.compile("[A-Z][A-Za-z\\s]*");
 
     public List<BodyExceptionWrapper> validate(CharacteristicDTO characteristicDTO){
         List<BodyExceptionWrapper> reports=new ArrayList<>();

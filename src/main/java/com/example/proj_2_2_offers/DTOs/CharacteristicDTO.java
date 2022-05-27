@@ -16,4 +16,5 @@ public class CharacteristicDTO {
     private Integer quantity;
     private Double price;
     private Boolean isDurable;
+    private Integer mainQuantity;
 }

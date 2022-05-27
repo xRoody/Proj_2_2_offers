@@ -18,4 +18,5 @@ public class OfferDTO {
     private Double price;
     private List<CharacteristicDTO> characteristics=new ArrayList<>();
     private Long categoryId;
+    private boolean isAvailable;
 }

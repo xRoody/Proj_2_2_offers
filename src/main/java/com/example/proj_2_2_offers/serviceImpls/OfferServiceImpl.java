@@ -4,6 +4,8 @@ package com.example.proj_2_2_offers.serviceImpls;
 import com.example.proj_2_2_offers.DTOs.CharacteristicDTO;
 import com.example.proj_2_2_offers.DTOs.OfferDTO;
 import com.example.proj_2_2_offers.entities.Category;
+import com.example.proj_2_2_offers.entities.Characteristic;
+import com.example.proj_2_2_offers.entities.CharacteristicNode;
 import com.example.proj_2_2_offers.entities.Offer;
 import com.example.proj_2_2_offers.repositories.CategoryRepo;
 import com.example.proj_2_2_offers.repositories.OfferRepo;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.HashSet;
 
 import java.util.List;
@@ -36,13 +39,21 @@ public class OfferServiceImpl implements OfferService {
     }
 
     public OfferDTO getDTOByObj(Offer offer){
-        return OfferDTO.builder()
+        boolean f=false;
+        List<CharacteristicDTO> list=new ArrayList<>();
+        OfferDTO offerDTO= OfferDTO.builder()
                 .id(offer.getId())
                 .title(offer.getTitle())
                 .price(offer.getPrice())
                 .categoryId(offer.getCategory().getId())
-                .characteristics(offer.getCharacteristics().stream().map(x->characteristicService.getDTObyObj(x)).collect(Collectors.toList()))
                 .build();
+        for (CharacteristicNode c:offer.getCharacteristics()){
+            if (c.getCharacteristic().getQuantity()==null || c.getCharacteristic().getQuantity()<=0) f=true;
+            list.add(characteristicService.getDTObyObj(c));
+        }
+        offerDTO.setCharacteristics(list);
+        offerDTO.setAvailable(f);
+        return offerDTO;
     }
 
     public OfferDTO getDTOById(Long id){
@@ -80,12 +91,8 @@ public class OfferServiceImpl implements OfferService {
         offerRepo.save(offer);
         for (CharacteristicDTO dto:offerDTO.getCharacteristics()){
             dto.setOfferId(offer.getId());
-            if (dto.getId()!=null && characteristicService.isExists(dto.getId())){
-                characteristicService.update(dto);
-            }else {
-                dto.setId(null);
-                offer.getCharacteristics().add(characteristicService.getObjByDTO(dto));
-            }
+            dto.setId(null);
+            characteristicService.addCharacteristic(dto);
         }
         log.info("offer {} has been added", offerDTO);
     }
@@ -101,7 +108,7 @@ public class OfferServiceImpl implements OfferService {
                 characteristicService.update(characteristicDTO);
             }else {
                 characteristicDTO.setOfferId(offer.getId());
-                offer.getCharacteristics().add(characteristicService.getObjByDTO(characteristicDTO));
+                offer.getCharacteristics().add(characteristicService.getNodeByDTO(characteristicDTO));
             }
         }
         offerRepo.save(offer);
